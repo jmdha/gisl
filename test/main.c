@@ -43,8 +43,8 @@ void test_WGS84toECEF() {
 		{.x = 4517591, .y = 0, .z = 4487348},
 		{.x = 0, .y = 0, .z = 6356752},
 		{.x = -6378137, .y = 0, .z = 0},
-		{.x =   0, .y = -6378137, .z = 0},
-		{.x =   0, .y = 6378137, .z = 0},
+		{.x = 0, .y = -6378137, .z = 0},
+		{.x = 0, .y = 6378137, .z = 0},
 		{.x = -6378137, .y = 0, .z = 0},
 		{.x = 3194419, .y = -3194419, .z = -4487348},
 		{.x = 3194419, .y = 3194419, .z = -4487348},
@@ -65,6 +65,30 @@ void test_WGS84toECEF() {
 	}
 }
 
+void test_ECEFtoWGS84() {
+	printf("----ECEFtoWGS84----\n");
+	const size_t count = 3;
+	const vec3_t tests[] = {
+		{.x = 6378137, .y = 0, .z = 0},
+		{.x = 0, .y = 6378137, .z = 0},
+		{.x = 6378137, .y = 0, .z = 1000000},
+	};
+	const vec3_t expected[] = {
+		{.x = 0, .y = 0, .z = 0},
+		{.x = 0, .y = 90, .z = 0},
+		{.x = 9, .y = 0, .z = 78432},
+	};
+	for (size_t i = 0; i < count; i++) {
+		printf("%zu...", i);
+		fflush(stdout);
+		vec3_t a;
+		ECEFtoWGS84_deg(&a.x, &a.y, &a.z, tests[i].x, tests[i].y, tests[i].z);
+		assert(cmp(a, expected[i]));
+		printf("ok\n");
+	}
+}
+
 int main(int argc, char** argv) {
 	test_WGS84toECEF();
+	test_ECEFtoWGS84();
 }
